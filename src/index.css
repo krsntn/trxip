@@ -87,6 +87,17 @@
   }
 }
 
+/*
+ * iOS 26 home-screen app bug: when the page is shorter than the screen, the fixed bottom bar
+ * sits about one status-bar height too high. A page that can scroll is not affected,
+ * so the page is always 1px taller than the screen.
+ */
+@media (display-mode: standalone) {
+  body {
+    min-height: calc(100lvh + 1px);
+  }
+}
+
 @utility figures {
   font-family: var(--font-figure);
   font-variant-numeric: tabular-nums lining-nums;
