@@ -43,17 +43,32 @@ export function today(): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
 
+function toDate(date: string): Date {
+  const [y, m, d] = date.split('-').map(Number)
+  return new Date(y, m - 1, d)
+}
+
+const thisYear = (value: Date) => value.getFullYear() === new Date().getFullYear()
+
 /** "Sat 14 Nov". Adds the year when it is not this year. */
 export function formatDay(date: string): string {
-  const [y, m, d] = date.split('-').map(Number)
-  const value = new Date(y, m - 1, d)
-  const thisYear = new Date().getFullYear() === y
+  const value = toDate(date)
   return new Intl.DateTimeFormat('en-GB', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
-    ...(thisYear ? {} : { year: 'numeric' }),
+    ...(thisYear(value) ? {} : { year: 'numeric' }),
   })
     .format(value)
     .replace(',', '')
+}
+
+/** "13–18 Nov", "30 Oct – 2 Nov", or "14 Nov" for one day. Adds the years when a date is not this year. */
+export function formatDayRange(first: string, last: string): string {
+  const [from, to] = [toDate(first), toDate(last)]
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    ...(thisYear(from) && thisYear(to) ? {} : { year: 'numeric' }),
+  }).formatRange(from, to)
 }

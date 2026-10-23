@@ -14,6 +14,7 @@
     --font-heading: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif;
     --font-figure: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif;
     --color-foreign: var(--foreign);
+    --color-brand: var(--brand);
     --color-ring: var(--ring);
     --color-input: var(--input);
     --color-border: var(--border);
@@ -41,7 +42,8 @@
 
 /*
  * Dark only. Ink background, paper text.
- * Amber is reserved for foreign-currency amounts, so colour always tells you the currency.
+ * Amber is the app colour. On the Expenses screen it marks foreign-currency amounts.
+ * On the Summary screen it fills the category bars.
  */
 :root {
     color-scheme: dark;
@@ -71,6 +73,7 @@
     --input: #34404f;
     --ring: var(--fog);
     --foreign: var(--amber);
+    --brand: var(--amber);
     --radius: 0.625rem;
 }
 
