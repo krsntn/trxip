@@ -1,0 +1,103 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource/barlow/400.css";
+@import "@fontsource/barlow/500.css";
+@import "@fontsource/barlow/600.css";
+@import "@fontsource/barlow-semi-condensed/500.css";
+@import "@fontsource/barlow-semi-condensed/600.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-sans: 'Barlow', system-ui, sans-serif;
+    --font-heading: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif;
+    --font-figure: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif;
+    --color-foreign: var(--foreign);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+/*
+ * Dark only. Ink background, paper text.
+ * Amber is reserved for foreign-currency amounts, so colour always tells you the currency.
+ */
+:root {
+    color-scheme: dark;
+    --ink: #11161d;
+    --slate: #19202a;
+    --rule: #2a3340;
+    --paper: #ece8e0;
+    --fog: #8d97a5;
+    --amber: #f2b544;
+
+    --background: var(--ink);
+    --foreground: var(--paper);
+    --card: var(--slate);
+    --card-foreground: var(--paper);
+    --popover: var(--slate);
+    --popover-foreground: var(--paper);
+    --primary: var(--paper);
+    --primary-foreground: var(--ink);
+    --secondary: #232c38;
+    --secondary-foreground: var(--paper);
+    --muted: #1d252f;
+    --muted-foreground: var(--fog);
+    --accent: #232c38;
+    --accent-foreground: var(--paper);
+    --destructive: #f0806e;
+    --border: var(--rule);
+    --input: #34404f;
+    --ring: var(--fog);
+    --foreign: var(--amber);
+    --radius: 0.625rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+@utility figures {
+  font-family: var(--font-figure);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Accounting convention: a double line closes the trip total. */
+@utility rule-double {
+  --rule-color: color-mix(in oklab, var(--paper) 55%, transparent);
+  background-image: linear-gradient(var(--rule-color), var(--rule-color)),
+    linear-gradient(var(--rule-color), var(--rule-color));
+  background-size: 100% 1px;
+  background-position: left bottom, left bottom 3px;
+  background-repeat: no-repeat;
+}
