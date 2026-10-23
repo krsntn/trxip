@@ -25,6 +25,21 @@ export function TripForm({
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
 
+  // When the stored trip changes outside this form, for example after a restore, show the stored values.
+  // After a save in this form, the stored trip already matches the form, so nothing changes.
+  const stored = initial && `${initial.homeCurrency} ${initial.foreignCurrency} ${initial.rate}`
+  const [previous, setPrevious] = useState(stored)
+  if (stored !== previous) {
+    setPrevious(stored)
+    if (initial && stored !== `${home} ${foreign} ${rateText}`) {
+      setHome(initial.homeCurrency)
+      setForeign(initial.foreignCurrency)
+      setRateText(String(initial.rate))
+      setError(null)
+      setSaved(false)
+    }
+  }
+
   const changed =
     !initial || home !== initial.homeCurrency || foreign !== initial.foreignCurrency || rateText !== String(initial.rate)
 
@@ -95,12 +110,9 @@ export function TripForm({
         </div>
       </Field>
 
-      <div className="flex items-center gap-3">
-        <Button type="submit" className="h-11 flex-1 text-base" disabled={!changed && !!initial}>
-          {submitLabel}
-        </Button>
-        {saved && initial && <span className="text-sm text-muted-foreground">Saved.</span>}
-      </div>
+      <Button type="submit" className="h-11 w-full text-base" disabled={!changed && !!initial}>
+        {saved && initial ? 'Saved' : submitLabel}
+      </Button>
     </form>
   )
 }
