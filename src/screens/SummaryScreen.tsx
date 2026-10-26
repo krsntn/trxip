@@ -8,17 +8,21 @@ export function SummaryScreen({
   trip,
   expenses,
   categories,
+  wide = false,
 }: {
   trip: Trip
   expenses: Expense[]
   categories: Category[]
+  /** In the web layout, the summary is a pane beside the Expenses table, so its title is not the page title. */
+  wide?: boolean
 }) {
   const rows = categorySummary(expenses, categories, trip)
   const dates = expenses.map((e) => e.date).sort()
+  const Title = wide ? 'h2' : 'h1'
 
   return (
-    <div className="px-4 pt-[max(env(safe-area-inset-top),1.25rem)]">
-      <h1 className="font-heading text-2xl font-semibold">Summary</h1>
+    <div className={wide ? undefined : 'px-4 pt-[max(env(safe-area-inset-top),1.25rem)]'}>
+      <Title className="font-heading text-2xl font-semibold">Summary</Title>
       {dates.length > 0 && (
         <p className="mt-0.5 text-muted-foreground">
           {dates.length} {dates.length === 1 ? 'expense' : 'expenses'}, {formatDayRange(dates[0], dates.at(-1)!)}

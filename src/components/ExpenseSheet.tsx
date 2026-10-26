@@ -10,9 +10,11 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { homeAmount } from '@/domain/money'
 import type { Category, Expense, Trip } from '@/domain/types'
+import { useWide } from '@/hooks/useWide'
 import { formatAmount, parseAmount, today } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { store } from '@/storage'
@@ -32,6 +34,7 @@ export function ExpenseSheet({
   trip: Trip
   categories: Category[]
 }) {
+  const wide = useWide()
   // Keep the last target so the form keeps its content while the sheet animates closed.
   // Each opening gets a new form key, so the form starts fresh.
   const [shown, setShown] = useState<Exclude<SheetTarget, null>>('new')
@@ -45,24 +48,44 @@ export function ExpenseSheet({
     }
   }
 
+  const open = target !== null
+  const onOpenChange = (next: boolean) => !next && onClose()
+  const title = shown === 'new' ? 'New expense' : 'Edit expense'
+  const description = `Type the amount in ${trip.foreignCurrency} or ${trip.homeCurrency}.`
+  const form = (className: string) => (
+    <ExpenseForm
+      key={`${openCount}-${shown === 'new' ? 'new' : shown.id}`}
+      expense={shown === 'new' ? null : shown}
+      trip={trip}
+      categories={categories}
+      onDone={onClose}
+      className={className}
+    />
+  )
+
+  // The web layout opens the form as a dialog in the center of the window.
+  if (wide) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader className="px-6 pt-5 pr-14">
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription className="sr-only">{description}</DialogDescription>
+          </DialogHeader>
+          {form('px-6 pt-4 pb-6')}
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
   return (
-    <Drawer open={target !== null} onOpenChange={(open) => !open && onClose()} repositionInputs={false}>
+    <Drawer open={open} onOpenChange={onOpenChange} repositionInputs={false}>
       <DrawerContent className="mx-auto max-w-lg">
         <DrawerHeader className="px-4 pb-0 text-left">
-          <DrawerTitle className="font-heading text-xl font-semibold">
-            {shown === 'new' ? 'New expense' : 'Edit expense'}
-          </DrawerTitle>
-          <DrawerDescription className="sr-only">
-            Type the amount in {trip.foreignCurrency} or {trip.homeCurrency}.
-          </DrawerDescription>
+          <DrawerTitle className="font-heading text-xl font-semibold">{title}</DrawerTitle>
+          <DrawerDescription className="sr-only">{description}</DrawerDescription>
         </DrawerHeader>
-        <ExpenseForm
-          key={`${openCount}-${shown === 'new' ? 'new' : shown.id}`}
-          expense={shown === 'new' ? null : shown}
-          trip={trip}
-          categories={categories}
-          onDone={onClose}
-        />
+        {form('px-4 pt-4 pb-[max(env(safe-area-inset-bottom),1rem)]')}
       </DrawerContent>
     </Drawer>
   )
@@ -73,11 +96,13 @@ function ExpenseForm({
   trip,
   categories,
   onDone,
+  className,
 }: {
   expense: Expense | null
   trip: Trip
   categories: Category[]
   onDone: () => void
+  className: string
 }) {
   const [currency, setCurrency] = useState<Expense['currency']>(expense?.currency ?? 'foreign')
   const [amountText, setAmountText] = useState(expense ? String(expense.amount) : '')
@@ -125,7 +150,7 @@ function ExpenseForm({
   }
 
   return (
-    <form onSubmit={save} noValidate className="flex flex-col gap-5 overflow-y-auto px-4 pt-4 pb-[max(env(safe-area-inset-bottom),1rem)]">
+    <form onSubmit={save} noValidate className={cn('flex flex-col gap-5 overflow-y-auto', className)}>
       <Field label="Amount" error={amountError}>
         <div className="grid grid-cols-2 gap-3">
           <AmountInput
@@ -159,7 +184,7 @@ function ExpenseForm({
                 'h-9 rounded-full border px-3.5 text-[15px] transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/40',
                 categoryId === c.id
                   ? 'border-foreground bg-foreground text-background'
-                  : 'border-input text-muted-foreground active:bg-muted',
+                  : 'border-input text-muted-foreground hover:bg-muted active:bg-muted',
               )}
             >
               {c.name}
