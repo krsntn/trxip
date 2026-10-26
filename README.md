@@ -9,6 +9,7 @@ Live: https://trxip.vercel.app
 
 ## Features
 
+- **Setup:** The first page asks for the currencies and the rate. A "What is Trxip?" section tells a new user what the app does. It is closed at the start.
 - **Expenses:** Add, edit and delete an expense. Each expense has a date, a category, a description and an amount.
 - **Two currencies:** Type the amount in the foreign currency, and the app converts it to the home currency. Type it in the home currency, and the foreign column stays blank.
 - **Live rate:** The rate is foreign units per 1 home unit, for example 1 MYR = 32.68 JPY. A new rate converts all foreign expenses again. See [ADR 0002](docs/adr/0002-live-rate.md).
@@ -17,6 +18,7 @@ Live: https://trxip.vercel.app
 - **Categories:** Transport, Food, Shopping, Tickets, Accommodation and Other at the start. Add, rename and delete them on the Config screen. A category that expenses use cannot be deleted.
 - **Files:** Export a CSV for a spreadsheet. Back up to a JSON file, and restore it on this or another device. On a phone, the share sheet opens ("Save to Files" on iPhone).
 - **New trip:** Deletes all data: expenses, categories, currencies and rate. The default categories come back, and the setup page opens again.
+- **Web layout:** At 1024px and wider, a top bar replaces the bottom bar. Expenses and Summary show side by side, and the expenses table has a category column. The expense form opens as a dialog. Press N to add an expense.
 
 Totals are in the home currency. The app rounds each home amount first and then adds them, so the totals match a spreadsheet of the same rows.
 
@@ -42,7 +44,7 @@ Vite, React 19, TypeScript, Tailwind CSS 4, shadcn/ui, Dexie (IndexedDB), vite-p
 | `src/domain` | Money rules: conversion, rounding, totals and CSV. Pure functions. |
 | `src/storage` | The Dexie store and the backup format. All reads and writes of data go through it. |
 | `src/lib` | Formatting, parsing and the file export. |
-| `src/hooks` | Live data (`useTripData`) and the current screen (`useScreen`). |
+| `src/hooks` | Live data (`useTripData`), the current screen (`useScreen`) and the web layout switch (`useWide`). |
 | `src/components` | Shared parts of the UI. `ui/` holds the shadcn/ui components. |
 | `src/screens` | The Setup, Expenses, Summary and Config screens. |
 
