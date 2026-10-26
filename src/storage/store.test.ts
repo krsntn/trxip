@@ -84,18 +84,24 @@ describe('store', () => {
     expect(await store.getTrip()).toEqual(japan)
   })
 
-  it('starts a new trip by deleting all expenses, keeping the categories, and unlocking the currencies', async () => {
+  it('starts a new trip by deleting all data and bringing back the default categories', async () => {
     const store = freshStore()
     await store.saveTrip(japan)
     const souvenirs = await store.addCategory('Souvenirs')
     await store.addExpense({ date: '2026-11-14', categoryId: souvenirs.id, description: '', amount: 1000, currency: 'foreign' })
-    const categoriesBefore = await store.listCategories()
 
     await store.startNewTrip()
 
+    expect(await store.getTrip()).toBeUndefined()
     expect(await store.listExpenses()).toEqual([])
-    expect(await store.listCategories()).toEqual(categoriesBefore)
-    expect(await store.getTrip()).toEqual(japan)
+    expect((await store.listCategories()).map((c) => c.name)).toEqual([
+      'Transport',
+      'Food',
+      'Shopping',
+      'Tickets',
+      'Accommodation',
+      'Other',
+    ])
     const thailand: Trip = { homeCurrency: 'MYR', foreignCurrency: 'THB', rate: 7.7 }
     await store.saveTrip(thailand)
     expect(await store.getTrip()).toEqual(thailand)

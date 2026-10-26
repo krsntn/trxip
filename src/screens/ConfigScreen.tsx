@@ -44,7 +44,7 @@ export function ConfigScreen(data: TripData) {
         <RestoreButton expenseCount={expenses.length} className="mt-3" />
       </Section>
 
-      <Section title="New trip" note="Deletes all expenses. Categories, currencies and rate stay.">
+      <Section title="New trip" note="Deletes all data and opens the setup page again.">
         <NewTripButton data={data} />
       </Section>
     </div>
@@ -141,17 +141,17 @@ function CategoryEditor({ categories }: { categories: Category[] }) {
 }
 
 function NewTripButton({ data }: { data: TripData }) {
-  const expenseCount = data.expenses.length
   const [open, setOpen] = useState(false)
+
+  async function startOver() {
+    await store.startNewTrip()
+    // With no trip, the app shows the setup page. After setup, it opens the Expenses screen, not Config.
+    window.location.replace('#/')
+  }
 
   return (
     <>
-      <Button
-        variant="destructive"
-        className="h-11 w-full text-base"
-        disabled={expenseCount === 0}
-        onClick={() => setOpen(true)}
-      >
+      <Button variant="destructive" className="h-11 w-full text-base" onClick={() => setOpen(true)}>
         Start new trip
       </Button>
       <AlertDialog open={open} onOpenChange={setOpen}>
@@ -159,7 +159,7 @@ function NewTripButton({ data }: { data: TripData }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Start a new trip?</AlertDialogTitle>
             <AlertDialogDescription>
-              This deletes all {expenseCount} {expenseCount === 1 ? 'expense' : 'expenses'}. To keep a copy of this
+              This deletes all data on this device: expenses, categories, currencies and rate. To keep a copy of this
               trip, back up first.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -168,8 +168,8 @@ function NewTripButton({ data }: { data: TripData }) {
             <Button variant="outline" onClick={() => void backUp(data)}>
               Back up
             </Button>
-            <AlertDialogAction variant="destructive" onClick={() => void store.startNewTrip()}>
-              Delete expenses
+            <AlertDialogAction variant="destructive" onClick={() => void startOver()}>
+              Delete everything
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

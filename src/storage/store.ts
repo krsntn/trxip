@@ -4,6 +4,9 @@ import { type Backup, buildBackup, parseBackup } from './backup'
 
 const DEFAULT_CATEGORIES = ['Transport', 'Food', 'Shopping', 'Tickets', 'Accommodation', 'Other']
 
+const defaultCategories = (): Category[] =>
+  DEFAULT_CATEGORIES.map((name, order) => ({ id: crypto.randomUUID(), name, order }))
+
 interface TripRow extends Trip {
   id: 'current'
 }
@@ -27,9 +30,7 @@ class TrxipDB extends Dexie {
       trip: 'id',
     })
     this.on('populate', (tx) => {
-      tx.table('categories').bulkAdd(
-        DEFAULT_CATEGORIES.map((name, order) => ({ id: crypto.randomUUID(), name, order })),
-      )
+      tx.table('categories').bulkAdd(defaultCategories())
     })
   }
 }
@@ -108,9 +109,12 @@ export function createStore(name = 'trxip') {
     await db.expenses.delete(id)
   }
 
-  /** Deletes all expenses. The trip settings and categories stay. */
+  /** Deletes all data: the trip, the expenses and the categories. The default categories come back. */
   async function startNewTrip(): Promise<void> {
-    await db.expenses.clear()
+    await db.transaction('rw', db.trip, db.categories, db.expenses, async () => {
+      await Promise.all([db.trip.clear(), db.categories.clear(), db.expenses.clear()])
+      await db.categories.bulkAdd(defaultCategories())
+    })
   }
 
   async function createBackup(): Promise<Backup> {

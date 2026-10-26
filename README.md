@@ -16,7 +16,7 @@ Live: https://trxip.vercel.app
 - **Summary:** The trip total and a total for each category, highest first.
 - **Categories:** Transport, Food, Shopping, Tickets, Accommodation and Other at the start. Add, rename and delete them on the Config screen. A category that expenses use cannot be deleted.
 - **Files:** Export a CSV for a spreadsheet. Back up to a JSON file, and restore it on this or another device. On a phone, the share sheet opens ("Save to Files" on iPhone).
-- **New trip:** Deletes all expenses. Categories, currencies and rate stay.
+- **New trip:** Deletes all data: expenses, categories, currencies and rate. The default categories come back, and the setup page opens again.
 
 Totals are in the home currency. The app rounds each home amount first and then adds them, so the totals match a spreadsheet of the same rows.
 

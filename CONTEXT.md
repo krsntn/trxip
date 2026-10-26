@@ -21,7 +21,7 @@ _Avoid_: Exchange rate snapshot, historical rate
 ### Expenses
 
 **Trip**:
-The one current set of expenses, with its home currency, foreign currency and rate. Only one trip exists at a time. Starting a new trip deletes all expenses, and the currencies can change only when the trip has no expenses.
+The one current set of expenses, with its home currency, foreign currency and rate. Only one trip exists at a time. Starting a new trip deletes all data (the expenses, the categories, the currencies and the rate) and opens the setup page again; the default categories come back. The currencies can change only when the trip has no expenses.
 _Avoid_: Sheet, ledger, book
 
 **Expense**:
