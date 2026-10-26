@@ -72,3 +72,6 @@ export function formatDayRange(first: string, last: string): string {
     ...(thisYear(from) && thisYear(to) ? {} : { year: 'numeric' }),
   }).formatRange(from, to)
 }
+
+/** "1 expense", "12 expenses". */
+export const formatExpenseCount = (n: number) => `${n} ${n === 1 ? 'expense' : 'expenses'}`

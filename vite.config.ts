@@ -2,12 +2,37 @@
 import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import type { IncomingMessage, ServerResponse } from 'node:http'
+import { defineConfig, type Plugin } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { handleTransfer, memoryKv } from './api/transfer.ts'
+
+/** Serves the transfer relay on the dev and preview servers. It keeps data in memory in place of Upstash. */
+function transferRelay(): Plugin {
+  const kv = memoryKv()
+  async function relay(req: IncomingMessage, res: ServerResponse) {
+    const chunks: Buffer[] = []
+    for await (const chunk of req) chunks.push(chunk as Buffer)
+    const request = new Request(new URL(req.url ?? '/', 'http://localhost'), {
+      method: req.method,
+      body: req.method === 'POST' ? Buffer.concat(chunks).toString() : undefined,
+    })
+    const response = await handleTransfer(request, kv)
+    res.statusCode = response.status
+    response.headers.forEach((value, name) => res.setHeader(name, value))
+    res.end(await response.text())
+  }
+  return {
+    name: 'trxip-transfer-relay',
+    configureServer: (server) => void server.middlewares.use('/api/transfer', relay),
+    configurePreviewServer: (server) => void server.middlewares.use('/api/transfer', relay),
+  }
+}
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
+    transferRelay(),
     react(),
     tailwindcss(),
     VitePWA({

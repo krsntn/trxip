@@ -1,5 +1,6 @@
 import { ArrowLeftRight, CalendarDays, Info, Smartphone } from 'lucide-react'
 import { RestoreButton } from '@/components/RestoreButton'
+import { ReceiveButton, ScanButton } from '@/components/Transfer'
 import { TripForm } from '@/components/TripForm'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
@@ -60,8 +61,17 @@ export function SetupScreen() {
       </p>
       <TripForm submitLabel="Start tracking" />
       <div className="mt-10 border-t border-border pt-5 text-muted-foreground">
-        <p>Moving from another phone?</p>
-        <RestoreButton expenseCount={0} variant="link" />
+        <p>Is your trip on another device?</p>
+        {/* A phone scans the code. A computer shows it. */}
+        <div className="flex flex-col items-start gap-1">
+          <ScanButton data={null} variant="link">
+            Scan code
+          </ScanButton>
+          <ReceiveButton expenseCount={0} variant="link">
+            Show a code to receive
+          </ReceiveButton>
+          <RestoreButton expenseCount={0} variant="link" />
+        </div>
       </div>
     </main>
   )

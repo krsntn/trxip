@@ -55,3 +55,7 @@ _Avoid_: Backup, download
 **Backup**:
 A file with all app data (expenses, currencies, rate and categories) that the app can restore. A restore replaces all current data.
 _Avoid_: Export, snapshot
+
+**Transfer**:
+A one-time copy of all app data from one device to another with a QR code. One device shows the code (Send or Receive) and the other scans it. The receiving device replaces all its data, like a restore. It is not a sync: the devices do not stay the same after the copy.
+_Avoid_: Sync, share, pair

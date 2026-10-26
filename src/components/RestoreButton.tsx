@@ -11,9 +11,8 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { readBackupFile } from '@/lib/files'
+import { formatExpenseCount } from '@/lib/format'
 import { type Backup, parseBackup, store } from '@/storage'
-
-const plural = (n: number) => `${n} ${n === 1 ? 'expense' : 'expenses'}`
 
 const backupDate = (iso: string) =>
   new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(iso))
@@ -90,8 +89,8 @@ export function RestoreButton({
             <AlertDialogDescription>
               {pending && (
                 <>
-                  The backup from {backupDate(pending.exportedAt)} has {plural(pending.expenses.length)}. It replaces
-                  the {plural(expenseCount)}, the categories and the rate on this device.
+                  The backup from {backupDate(pending.exportedAt)} has {formatExpenseCount(pending.expenses.length)}. It replaces
+                  the {formatExpenseCount(expenseCount)}, the categories and the rate on this device.
                 </>
               )}
             </AlertDialogDescription>

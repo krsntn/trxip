@@ -2,6 +2,7 @@ import { Plus, Trash2 } from 'lucide-react'
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { controlClass } from '@/components/Field'
 import { RestoreButton } from '@/components/RestoreButton'
+import { ReceiveButton, ScanButton, SendButton } from '@/components/Transfer'
 import { TripForm } from '@/components/TripForm'
 import {
   AlertDialog,
@@ -42,6 +43,17 @@ export function ConfigScreen(data: TripData) {
           </Button>
         </div>
         <RestoreButton expenseCount={expenses.length} className="mt-3" />
+      </Section>
+
+      <Section
+        title="Another device"
+        note="Copy all data to or from another device with a QR code. Both devices need internet. On a phone, tap Scan code."
+      >
+        <div className="grid grid-cols-3 gap-3">
+          <SendButton data={data}>Send</SendButton>
+          <ReceiveButton expenseCount={expenses.length}>Receive</ReceiveButton>
+          <ScanButton data={data}>Scan code</ScanButton>
+        </div>
       </Section>
 
       <Section title="New trip" note="Deletes all data and opens the setup page again.">
